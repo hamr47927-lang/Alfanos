@@ -2,138 +2,115 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فانوس رمضان 2026 الحقيقي</title>
+    <title>فانوس رمضان 2026</title>
     <style>
         body {
-            background: radial-gradient(circle, #0a0a20 0%, #000 100%);
-            color: #ffd700;
+            background: #050510; color: #ffd700;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; font-family: 'Arial', sans-serif;
+            height: 100vh; margin: 0; font-family: sans-serif;
         }
 
-        .header { text-align: center; margin-bottom: 20px; }
-        #timer { font-size: 1.4rem; color: #f1c40f; font-weight: bold; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        #timer { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
 
-        .lantern-box {
-            position: relative; width: 320px; height: 520px; cursor: pointer;
+        .lantern-container {
+            position: relative; width: 300px; height: 500px; cursor: pointer;
         }
 
-        /* صورة هيكل الفانوس الحقيقي */
-        .lantern-ui {
-            position: absolute; width: 100%; height: 100%; z-index: 10; pointer-events: none;
+        /* صورة الفانوس الحقيقي مفرغة */
+        .lantern-img {
+            position: absolute; width: 100%; z-index: 10; pointer-events: none;
         }
 
-        /* منطقة الزجاج والحركة */
-        .inner-glass {
-            position: absolute; top: 24%; left: 16%; width: 68%; height: 40%;
-            z-index: 5; overflow: hidden; border-radius: 50% 50% 10% 10%;
-            background: rgba(255, 255, 255, 0.02);
+        .glass {
+            position: absolute; top: 25%; left: 15%; width: 70%; height: 40%;
+            z-index: 5; overflow: hidden; border-radius: 50%;
         }
 
-        /* دوران فنانيس بالداخل */
-        .fananis-group {
+        .rotator {
             position: absolute; width: 100%; height: 100%;
             display: none; transform-style: preserve-3d;
         }
-        .on .fananis-group { display: block; animation: rotateFananis 6s linear infinite; }
+        .active .rotator { display: block; animation: spin 5s linear infinite; }
 
-        .char-img {
-            position: absolute; width: 75px; top: 35%; left: 35%;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-        }
-        .p1 { transform: rotateY(0deg) translateZ(55px); }
-        .p2 { transform: rotateY(180deg) translateZ(55px); }
+        .fanis { position: absolute; width: 80px; top: 40%; left: 35%; }
+        .c1 { transform: rotateY(0deg) translateZ(60px); }
+        .c2 { transform: rotateY(180deg) translateZ(60px); }
 
-        @keyframes rotateFananis {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
+        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-        /* الإضاءة الذهبية */
-        .gold-glow {
+        .glow {
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
             width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.45) 0%, transparent 70%);
-            z-index: 4; opacity: 0; transition: 0.8s;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, transparent 70%);
+            z-index: 4; opacity: 0; transition: 0.5s;
         }
-        .on .gold-glow { opacity: 1; }
-
-        #snowCanvas { position: absolute; top: 0; left: 0; z-index: 6; pointer-events: none; }
+        .active .glow { opacity: 1; }
+        #glitter { position: absolute; top: 0; left: 0; z-index: 6; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🌙 رمضان يوم 19 مارس 🌙</h1>
-        <div id="timer">متبقي وقت قليل...</div>
-    </div>
+    <div id="timer">باقي وقت قليل على 19 مارس</div>
 
-    <div class="lantern-box" id="lantern">
-        <div class="gold-glow"></div>
-        <img src="https://i.ibb.co/3W6p0Fj/lantern-vogue.png" class="lantern-ui">
+    <div class="lantern-container" id="fanous">
+        <div class="glow"></div>
+        <img src="https://i.ibb.co/3W6p0Fj/lantern-vogue.png" class="lantern-img">
 
-        <div class="inner-glass">
-            <canvas id="snowCanvas"></canvas>
-            <div class="fananis-group">
-                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="char-img p1">
-                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="char-img p2">
+        <div class="glass">
+            <canvas id="glitter"></canvas>
+            <div class="rotator">
+                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="fanis c1">
+                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="fanis c2">
             </div>
         </div>
     </div>
 
-    <audio id="ramadanSong" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <audio id="audio" loop>
+        <source src="1000349041.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const box = document.getElementById('lantern');
-        const music = document.getElementById('ramadanSong');
-        const cvs = document.getElementById('snowCanvas');
-        const ctx = cvs.getContext('2d');
-        let play = false;
+        const f = document.getElementById('fanous');
+        const a = document.getElementById('audio');
+        const c = document.getElementById('glitter');
+        const ctx = c.getContext('2d');
+        let on = false;
 
-        box.onclick = () => {
-            play = !play;
-            box.classList.toggle('on');
-            if(play) {
-                music.play();
-                initSnow();
-            } else {
-                music.pause();
+        f.onclick = () => {
+            on = !on;
+            f.classList.toggle('active');
+            if(on) { 
+                a.play().catch(e => alert("اضغط مرة أخرى لتشغيل الصوت")); 
+                init(); 
+            } else { 
+                a.pause(); 
             }
         };
 
-        // عداد رمضان (19 مارس)
+        // العداد
         setInterval(() => {
-            const gap = new Date("March 19, 2026") - new Date();
-            const days = Math.floor(gap / (1000*60*60*24));
-            const hrs = Math.floor((gap / (1000*60*60)) % 24);
-            document.getElementById('timer').innerText = `باقي ${days} يوم و ${hrs} ساعة`;
+            const diff = new Date("March 19, 2026") - new Date();
+            const d = Math.floor(diff / (1000*60*60*24));
+            document.getElementById('timer').innerText = `باقي ${d} يوم على رمضان`;
         }, 1000);
 
-        // الجليتر (عاصفة الفانوس)
-        let particles = [];
-        function initSnow() {
-            cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight;
-            particles = Array.from({length: 65}, () => ({
-                x: Math.random() * cvs.width,
-                y: Math.random() * cvs.height,
-                s: Math.random() * 1.2 + 0.3
-            }));
+        let p = [];
+        function init() {
+            c.width = c.offsetWidth; c.height = c.offsetHeight;
+            p = Array.from({length: 60}, () => ({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()+0.5}));
         }
-
-        function animate() {
-            if(play) {
-                ctx.clearRect(0,0,cvs.width,cvs.height);
-                ctx.fillStyle = "rgba(255, 215, 0, 0.8)";
-                particles.forEach(p => {
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.3, 0, 7); ctx.fill();
-                    p.y += p.s; if(p.y > cvs.height) p.y = -5;
+        function draw() {
+            if(on) {
+                ctx.clearRect(0,0,c.width,c.height);
+                ctx.fillStyle = "gold";
+                p.forEach(i => {
+                    ctx.beginPath(); ctx.arc(i.x, i.y, 1.2, 0, 7); ctx.fill();
+                    i.y += i.s; if(i.y > c.height) i.y = -5;
                 });
             }
-            requestAnimationFrame(animate);
+            requestAnimationFrame(draw);
         }
-        animate();
+        draw();
     </script>
 </body>
 </html>
