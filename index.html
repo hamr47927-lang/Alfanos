@@ -3,188 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمل - سحر رمضان</title>
+    <title>أمل - جوهرة رمضان</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
 
         body, html {
             margin: 0; padding: 0; height: 100%;
-            background: #020205; overflow: hidden;
+            background: #000; overflow: hidden;
             font-family: 'Amiri', serif;
         }
 
-        /* خلفية سحرية */
-        #magic-bg {
+        /* خلفية النجوم الـ 3D المتحركة */
+        #canvas3d {
             position: fixed; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #0a0a25 0%, #000 100%);
-            z-index: 0;
+            z-index: 0; transition: opacity 1.5s ease;
         }
 
-        /* العداد */
-        .timer-box {
+        .header-timer {
             position: absolute; top: 5%; width: 100%; text-align: center;
-            color: #d4af37; z-index: 10; opacity: 0.7;
+            color: #d4af37; z-index: 10; font-size: 1.4rem;
         }
-        #countdown { font-size: 1.5rem; }
 
-        /* حاوية المركز */
-        .center-stage {
+        .stage {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             display: flex; flex-direction: column; align-items: center;
             z-index: 5;
         }
 
-        /* اسم أمل - البطل في المشهد */
-        .name-trigger {
-            font-size: 70px; color: #ffd700; cursor: pointer;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            transition: all 0.8s ease; z-index: 20;
-            user-select: none;
-        }
-        .active .name-trigger {
-            font-size: 55px; /* بيصغر شوية عشان يدخل جوه الفانوس */
-            text-shadow: 0 0 30px #d4af37;
-            transform: translateY(40px); /* بينزل لمكان الزجاج */
+        /* اسم أمل الفخم */
+        .name-hero {
+            font-size: 80px; color: #ffd700; cursor: pointer;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 30; position: relative;
         }
 
-        /* الفانوس - مخفي تماماً في البداية */
-        .lantern-ui {
-            width: 240px; height: 420px;
+        .active .name-hero {
+            font-size: 45px; transform: translateY(110px);
+            text-shadow: 0 0 40px #ffd700;
+        }
+
+        /* الفانوس */
+        .lantern-frame {
+            position: absolute; width: 260px; height: 440px;
             opacity: 0; transform: scale(0.5);
             transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; position: absolute; top: -140px;
+            pointer-events: none; top: -140px;
         }
 
-        .active .lantern-ui {
-            opacity: 1; transform: scale(1);
-        }
+        .active .lantern-frame { opacity: 1; transform: scale(1); }
 
-        /* أجزاء الفانوس */
-        .l-cap { width: 90px; height: 45px; background: linear-gradient(90deg, #5d4037, #d4af37, #5d4037); margin: 0 auto; border-radius: 50% 50% 0 0; }
-        .l-glass { 
-            width: 170px; height: 260px; border: 4px solid #d4af37;
-            margin: 0 auto; border-radius: 35px; position: relative;
-            background: rgba(255, 215, 0, 0.05); box-shadow: inset 0 0 30px #d4af37;
-            overflow: hidden;
+        .top-cap { width: 90px; height: 45px; background: linear-gradient(90deg, #5d4037, #d4af37, #5d4037); margin: 0 auto; border-radius: 50% 50% 0 0; }
+        .glass-body { 
+            width: 170px; height: 270px; border: 4px solid #d4af37;
+            margin: 0 auto; border-radius: 40px; position: relative;
+            background: rgba(255, 215, 0, 0.05); overflow: hidden;
         }
-        .l-base { width: 190px; height: 35px; background: linear-gradient(90deg, #5d4037, #d4af37, #5d4037); margin: -5px auto 0; border-radius: 8px; }
+        .base-plate { width: 190px; height: 35px; background: linear-gradient(90deg, #5d4037, #d4af37, #5d4037); margin: -5px auto 0; border-radius: 8px; }
 
-        /* دوران الاسم داخل الفانوس */
-        .rotator {
+        /* العناصر اللي بتلف حوالين الاسم */
+        .orbit-system {
             position: absolute; width: 100%; height: 100%;
             display: none; transform-style: preserve-3d;
         }
-        .active .rotator { display: block; animation: spin 8s linear infinite; }
+        .active .orbit-system { display: block; animation: orbit 6s linear infinite; }
 
-        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
-
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
-
-        /* هلال هادي */
-        .moon-shimmer {
-            position: absolute; top: 15%; right: 10%;
-            width: 60px; height: 60px; border-radius: 50%;
-            box-shadow: 10px 10px 0 0 #d4af37; opacity: 0.2;
+        .orbit-item {
+            position: absolute; top: 40%; left: 40%; font-size: 25px; color: #ffd700;
         }
+        .item-1 { transform: rotateY(0deg) translateZ(70px); }
+        .item-2 { transform: rotateY(120deg) translateZ(70px); }
+        .item-3 { transform: rotateY(240deg) translateZ(70px); }
+
+        @keyframes orbit { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+
+        #glitterCanvas { position: absolute; top: 0; left: 0; z-index: 6; pointer-events: none; }
+
+        .active-bg #canvas3d { opacity: 0.2; }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
-    <div id="magic-bg"></div>
-    <div class="moon-shimmer"></div>
+    <canvas id="canvas3d"></canvas>
 
-    <div class="timer-box">
-        <div id="countdown">باقي القليل...</div>
+    <div class="header-timer">
+        <div id="timer">باقي على أجمل الأيام...</div>
     </div>
 
-    <div class="center-stage" id="mainScene">
-        <div class="lantern-ui">
-            <div class="l-cap"></div>
-            <div class="l-glass">
-                <canvas id="snow"></canvas>
-                <div class="rotator">
-                    </div>
+    <div class="stage" id="mainStage">
+        <div class="lantern-frame">
+            <div class="top-cap"></div>
+            <div class="glass-body">
+                <canvas id="glitterCanvas"></canvas>
+                <div class="orbit-system">
+                    <div class="orbit-item item-1">⭐</div>
+                    <div class="orbit-item item-2">❤️</div>
+                    <div class="orbit-item item-3">🌙</div>
+                </div>
             </div>
-            <div class="l-base"></div>
+            <div class="base-plate"></div>
         </div>
 
-        <div class="name-trigger" id="nameTrigger">أمل</div>
+        <div class="name-hero" id="trigger">أمل</div>
     </div>
 
-    <audio id="ramadanSong" loop>
+    <audio id="audio" loop>
         <source src="1000349041.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const scene = document.getElementById('mainScene');
-        const trigger = document.getElementById('nameTrigger');
-        const song = document.getElementById('ramadanSong');
-        const canvas = document.getElementById('snow');
-        const ctx = canvas.getContext('2d');
-        let isActivated = false;
+        const body = document.getElementById('mainBody');
+        const stage = document.getElementById('mainStage');
+        const trigger = document.getElementById('trigger');
+        const song = document.getElementById('audio');
+        const canvas3d = document.getElementById('canvas3d');
+        const ctx3d = canvas3d.getContext('2d');
+        const gCanvas = document.getElementById('glitterCanvas');
+        const gCtx = gCanvas.getContext('2d');
 
-        // الضغط على اسم أمل
+        let isRunning = false;
+        let stars = [];
+
+        function initStars() {
+            canvas3d.width = window.innerWidth;
+            canvas3d.height = window.innerHeight;
+            stars = Array.from({length: 150}, () => ({
+                x: Math.random() * canvas3d.width - canvas3d.width/2,
+                y: Math.random() * canvas3d.height - canvas3d.height/2,
+                z: Math.random() * canvas3d.width
+            }));
+        }
+
+        function drawStars() {
+            ctx3d.fillStyle = "#000";
+            ctx3d.fillRect(0,0,canvas3d.width, canvas3d.height);
+            ctx3d.save();
+            ctx3d.translate(canvas3d.width/2, canvas3d.height/2);
+            stars.forEach(s => {
+                s.z -= isRunning ? 0.5 : 2; 
+                if(s.z <= 0) s.z = canvas3d.width;
+                let sx = s.x * (canvas3d.width / s.z);
+                let sy = s.y * (canvas3d.width / s.z);
+                let size = (1 - s.z / canvas3d.width) * 3;
+                ctx3d.fillStyle = `rgba(212, 175, 55, ${1 - s.z/canvas3d.width})`;
+                ctx3d.beginPath(); ctx.arc(sx, sy, size, 0, 7); ctx3d.fill();
+            });
+            ctx3d.restore();
+            requestAnimationFrame(drawStars);
+        }
+
         trigger.onclick = () => {
-            if(!isActivated) {
-                isActivated = true;
-                scene.classList.add('active');
-                song.play();
-                initSnow();
-                trigger.innerText = "أمل ✨";
-            } else {
-                isActivated = false;
-                scene.classList.remove('active');
-                song.pause();
-                trigger.innerText = "أمل";
-            }
+            isRunning = !isRunning;
+            stage.classList.toggle('active');
+            body.classList.toggle('active-bg');
+            if(isRunning) { song.play(); initGlitter(); } else { song.pause(); }
         };
 
-        // عداد 19 فبراير
-        const target = new Date("February 19, 2026 00:00:00").getTime();
         setInterval(() => {
-            const diff = target - new Date().getTime();
+            const diff = new Date("February 19, 2026") - new Date();
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('countdown').innerText = `رمضان يقترب: ${d}ي ${h}:${m}:${s}`;
+            document.getElementById('timer').innerText = `رمضان يقترب: ${d}ي ${h}:${m}:${s}`;
         }, 1000);
 
-        // جليتر
-        let particles = [];
-        function initSnow() {
-            canvas.width = 170; canvas.height = 260;
-            particles = Array.from({length: 60}, () => ({
-                x: Math.random()*170, y: Math.random()*260, v: Math.random()*0.8+0.4
-            }));
+        let dots = [];
+        function initGlitter() {
+            gCanvas.width = 170; gCanvas.height = 270;
+            dots = Array.from({length: 50}, () => ({ x: Math.random()*170, y: Math.random()*270, v: Math.random()*0.7+0.4 }));
         }
 
-        function draw() {
-            if(isActivated) {
-                ctx.clearRect(0,0,170,260);
-                ctx.fillStyle = "rgba(212, 175, 55, 0.8)";
-                particles.forEach(p => {
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.2, 0, 7); ctx.fill();
-                    p.y += p.v; if(p.y > 260) p.y = -5;
+        function drawGlitter() {
+            if(isRunning) {
+                gCtx.clearRect(0,0,170,270);
+                gCtx.fillStyle = "#ffd700";
+                dots.forEach(d => {
+                    gCtx.beginPath(); gCtx.arc(d.x, d.y, 1.2, 0, 7); gCtx.fill();
+                    d.y += d.v; if(d.y > 270) d.y = -5;
                 });
             }
-            requestAnimationFrame(draw);
+            requestAnimationFrame(drawGlitter);
         }
-        draw();
 
-        // نجوم الخلفية
-        const bg = document.getElementById('magic-bg');
-        for(let i=0; i<80; i++) {
-            let s = document.createElement('div');
-            s.style.position = 'absolute';
-            s.style.width = '2px'; s.style.height = '2px';
-            s.style.background = '#fff';
-            s.style.left = Math.random()*100+'%';
-            s.style.top = Math.random()*100+'%';
-            s.style.opacity = Math.random()*0.5;
-            bg.appendChild(s);
-        }
+        window.onload = () => { initStars(); drawStars(); drawGlitter(); };
     </script>
 </body>
 </html>
