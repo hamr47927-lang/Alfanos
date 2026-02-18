@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>فانوس رمضان التفاعلي - فنانيس</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+            color: #fbbf24;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .countdown { margin-bottom: 20px; text-align: center; }
+        #timer { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
+
+        /* حاوية الفانوس */
+        .lantern-world {
+            position: relative;
+            width: 320px; height: 550px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .lantern-world:active { transform: scale(0.98); }
+
+        /* هيكل الفانوس الحقيقي */
+        .fanous-frame {
+            position: absolute; width: 100%; height: 100%;
+            z-index: 20; pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+
+        /* منطقة الزجاج اللي فيها الحركة */
+        .glass-area {
+            position: absolute;
+            top: 25%; left: 18%;
+            width: 64%; height: 40%;
+            z-index: 5;
+            border-radius: 50% 50% 15% 15%;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* حاوية الشخصيات (الدوران) */
+        .rotator {
+            position: absolute; width: 100%; height: 100%;
+            display: none; transform-style: preserve-3d;
+        }
+        .active .rotator { display: block; animation: spinInside 5s linear infinite; }
+
+        .fanis-img {
+            position: absolute; width: 70px; /* حجم فنانيس جوه */
+            top: 45%; left: 38%;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+
+        /* توزيع الشخصيات الحقيقية */
+        .f1 { transform: rotateY(0deg) translateZ(60px); }
+        .f2 { transform: rotateY(180deg) translateZ(60px); }
+
+        @keyframes spinInside {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        /* الجليتر الذهبي */
+        #glitterCanvas { position: absolute; top: 0; left: 0; z-index: 10; pointer-events: none; }
+
+        /* تأثير التنوير الذهبي */
+        .glow-light {
+            position: absolute; top: 40%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, transparent 70%);
+            z-index: 4; opacity: 0; transition: opacity 0.6s;
+        }
+        .active .glow-light { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="countdown">
+        <h2>🌙 رمضان يوم 19 مارس 🌙</h2>
+        <div id="timer">بيحمل الثواني...</div>
+    </div>
+
+    <div class="lantern-world" id="mainFanous">
+        <div class="glow-light"></div>
+        
+        <img src="https://i.ibb.co/L5fX0y0/vintage-lantern-frame.png" class="fanous-frame">
+
+        <div class="glass-area">
+            <canvas id="glitterCanvas"></canvas>
+            <div class="rotator">
+                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="fanis-img f1" alt="فنانيس">
+                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="fanis-img f2" alt="البنت">
+            </div>
+        </div>
+    </div>
+
+    <audio id="ramadanSong" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-ramadan-spirit-620.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const fanous = document.getElementById('mainFanous');
+        const song = document.getElementById('ramadanSong');
+        const canvas = document.getElementById('glitterCanvas');
+        const ctx = canvas.getContext('2d');
+        let isOn = false;
+
+        // 1. تشغيل الفانوس (الضغط)
+        fanous.onclick = function() {
+            isOn = !isOn;
+            this.classList.toggle('active');
+            if(isOn) {
+                song.play();
+                initGlitter();
+            } else {
+                song.pause();
+            }
+        };
+
+        // 2. عداد رمضان (19 مارس)
+        const ramadanDate = new Date("March 19, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = ramadanDate - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('timer').innerText = `باقي ${d} يوم و ${h} ساعة`;
+        }, 1000);
+
+        // 3. حركة الجليتر (عاصفة الثلج)
+        let dots = [];
+        function initGlitter() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            dots = [];
+            for(let i=0; i<70; i++) {
+                dots.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5+0.5 });
+            }
+        }
+
+        function draw() {
+            if(isOn) {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(251, 191, 36, 0.8)";
+                dots.forEach(p => {
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.2, 0, Math.PI*2); ctx.fill();
+                    p.y += p.s; if(p.y > canvas.height) p.y = -5;
+                });
+            }
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
