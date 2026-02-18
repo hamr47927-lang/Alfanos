@@ -2,159 +2,138 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فانوس رمضان التفاعلي - فنانيس</title>
+    <title>فانوس رمضان 2026 الحقيقي</title>
     <style>
         body {
-            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
-            color: #fbbf24;
+            background: radial-gradient(circle, #0a0a20 0%, #000 100%);
+            color: #ffd700;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh; margin: 0; font-family: 'Arial', sans-serif;
         }
 
-        .countdown { margin-bottom: 20px; text-align: center; }
-        #timer { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
+        .header { text-align: center; margin-bottom: 20px; }
+        #timer { font-size: 1.4rem; color: #f1c40f; font-weight: bold; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
 
-        /* حاوية الفانوس */
-        .lantern-world {
-            position: relative;
-            width: 320px; height: 550px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .lantern-world:active { transform: scale(0.98); }
-
-        /* هيكل الفانوس الحقيقي */
-        .fanous-frame {
-            position: absolute; width: 100%; height: 100%;
-            z-index: 20; pointer-events: none;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        .lantern-box {
+            position: relative; width: 320px; height: 520px; cursor: pointer;
         }
 
-        /* منطقة الزجاج اللي فيها الحركة */
-        .glass-area {
-            position: absolute;
-            top: 25%; left: 18%;
-            width: 64%; height: 40%;
-            z-index: 5;
-            border-radius: 50% 50% 15% 15%;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
+        /* صورة هيكل الفانوس الحقيقي */
+        .lantern-ui {
+            position: absolute; width: 100%; height: 100%; z-index: 10; pointer-events: none;
         }
 
-        /* حاوية الشخصيات (الدوران) */
-        .rotator {
+        /* منطقة الزجاج والحركة */
+        .inner-glass {
+            position: absolute; top: 24%; left: 16%; width: 68%; height: 40%;
+            z-index: 5; overflow: hidden; border-radius: 50% 50% 10% 10%;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* دوران فنانيس بالداخل */
+        .fananis-group {
             position: absolute; width: 100%; height: 100%;
             display: none; transform-style: preserve-3d;
         }
-        .active .rotator { display: block; animation: spinInside 5s linear infinite; }
+        .on .fananis-group { display: block; animation: rotateFananis 6s linear infinite; }
 
-        .fanis-img {
-            position: absolute; width: 70px; /* حجم فنانيس جوه */
-            top: 45%; left: 38%;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        .char-img {
+            position: absolute; width: 75px; top: 35%; left: 35%;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
         }
+        .p1 { transform: rotateY(0deg) translateZ(55px); }
+        .p2 { transform: rotateY(180deg) translateZ(55px); }
 
-        /* توزيع الشخصيات الحقيقية */
-        .f1 { transform: rotateY(0deg) translateZ(60px); }
-        .f2 { transform: rotateY(180deg) translateZ(60px); }
-
-        @keyframes spinInside {
+        @keyframes rotateFananis {
             from { transform: rotateY(0deg); }
             to { transform: rotateY(360deg); }
         }
 
-        /* الجليتر الذهبي */
-        #glitterCanvas { position: absolute; top: 0; left: 0; z-index: 10; pointer-events: none; }
-
-        /* تأثير التنوير الذهبي */
-        .glow-light {
-            position: absolute; top: 40%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, transparent 70%);
-            z-index: 4; opacity: 0; transition: opacity 0.6s;
+        /* الإضاءة الذهبية */
+        .gold-glow {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.45) 0%, transparent 70%);
+            z-index: 4; opacity: 0; transition: 0.8s;
         }
-        .active .glow-light { opacity: 1; }
+        .on .gold-glow { opacity: 1; }
 
+        #snowCanvas { position: absolute; top: 0; left: 0; z-index: 6; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div class="countdown">
-        <h2>🌙 رمضان يوم 19 مارس 🌙</h2>
-        <div id="timer">بيحمل الثواني...</div>
+    <div class="header">
+        <h1>🌙 رمضان يوم 19 مارس 🌙</h1>
+        <div id="timer">متبقي وقت قليل...</div>
     </div>
 
-    <div class="lantern-world" id="mainFanous">
-        <div class="glow-light"></div>
-        
-        <img src="https://i.ibb.co/L5fX0y0/vintage-lantern-frame.png" class="fanous-frame">
+    <div class="lantern-box" id="lantern">
+        <div class="gold-glow"></div>
+        <img src="https://i.ibb.co/3W6p0Fj/lantern-vogue.png" class="lantern-ui">
 
-        <div class="glass-area">
-            <canvas id="glitterCanvas"></canvas>
-            <div class="rotator">
-                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="fanis-img f1" alt="فنانيس">
-                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="fanis-img f2" alt="البنت">
+        <div class="inner-glass">
+            <canvas id="snowCanvas"></canvas>
+            <div class="fananis-group">
+                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="char-img p1">
+                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="char-img p2">
             </div>
         </div>
     </div>
 
     <audio id="ramadanSong" loop>
-        <source src="https://assets.mixkit.co/music/preview/mixkit-ramadan-spirit-620.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const fanous = document.getElementById('mainFanous');
-        const song = document.getElementById('ramadanSong');
-        const canvas = document.getElementById('glitterCanvas');
-        const ctx = canvas.getContext('2d');
-        let isOn = false;
+        const box = document.getElementById('lantern');
+        const music = document.getElementById('ramadanSong');
+        const cvs = document.getElementById('snowCanvas');
+        const ctx = cvs.getContext('2d');
+        let play = false;
 
-        // 1. تشغيل الفانوس (الضغط)
-        fanous.onclick = function() {
-            isOn = !isOn;
-            this.classList.toggle('active');
-            if(isOn) {
-                song.play();
-                initGlitter();
+        box.onclick = () => {
+            play = !play;
+            box.classList.toggle('on');
+            if(play) {
+                music.play();
+                initSnow();
             } else {
-                song.pause();
+                music.pause();
             }
         };
 
-        // 2. عداد رمضان (19 مارس)
-        const ramadanDate = new Date("March 19, 2026 00:00:00").getTime();
+        // عداد رمضان (19 مارس)
         setInterval(() => {
-            const now = new Date().getTime();
-            const diff = ramadanDate - now;
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('timer').innerText = `باقي ${d} يوم و ${h} ساعة`;
+            const gap = new Date("March 19, 2026") - new Date();
+            const days = Math.floor(gap / (1000*60*60*24));
+            const hrs = Math.floor((gap / (1000*60*60)) % 24);
+            document.getElementById('timer').innerText = `باقي ${days} يوم و ${hrs} ساعة`;
         }, 1000);
 
-        // 3. حركة الجليتر (عاصفة الثلج)
-        let dots = [];
-        function initGlitter() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            dots = [];
-            for(let i=0; i<70; i++) {
-                dots.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5+0.5 });
-            }
+        // الجليتر (عاصفة الفانوس)
+        let particles = [];
+        function initSnow() {
+            cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight;
+            particles = Array.from({length: 65}, () => ({
+                x: Math.random() * cvs.width,
+                y: Math.random() * cvs.height,
+                s: Math.random() * 1.2 + 0.3
+            }));
         }
 
-        function draw() {
-            if(isOn) {
-                ctx.clearRect(0,0,canvas.width, canvas.height);
-                ctx.fillStyle = "rgba(251, 191, 36, 0.8)";
-                dots.forEach(p => {
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.2, 0, Math.PI*2); ctx.fill();
-                    p.y += p.s; if(p.y > canvas.height) p.y = -5;
+        function animate() {
+            if(play) {
+                ctx.clearRect(0,0,cvs.width,cvs.height);
+                ctx.fillStyle = "rgba(255, 215, 0, 0.8)";
+                particles.forEach(p => {
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 1.3, 0, 7); ctx.fill();
+                    p.y += p.s; if(p.y > cvs.height) p.y = -5;
                 });
             }
-            requestAnimationFrame(draw);
+            requestAnimationFrame(animate);
         }
-        draw();
+        animate();
     </script>
 </body>
 </html>
