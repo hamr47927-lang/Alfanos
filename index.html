@@ -3,207 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فانوس رمضان الاحترافي 2026</title>
+    <title>رمضان 2026 - التجربة السينمائية</title>
     <style>
         :root {
             --gold: #d4af37;
-            --dark-copper: #5d4037;
-            --glass: rgba(255, 255, 255, 0.1);
+            --light-gold: #f9e29c;
         }
 
         body {
             margin: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at center, #1a1a2e, #050505);
-            transition: background 1.5s ease;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* لما الفانوس ينور، الخلفية بتهدأ وتضلم */
-        body.active {
             background: #020205;
-        }
-
-        .scene {
-            position: relative;
-            text-align: center;
-        }
-
-        /* تصميم الفانوس بالـ CSS */
-        .lantern {
-            width: 180px;
-            height: 320px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.5s;
-            margin-top: 50px;
-        }
-
-        /* قمة الفانوس */
-        .lantern-top {
-            width: 100px;
-            height: 50px;
-            background: linear-gradient(to right, var(--dark-copper), var(--gold), var(--dark-copper));
-            margin: 0 auto;
-            border-radius: 50% 50% 0 0;
-            position: relative;
-            border-bottom: 4px solid #3e2723;
-        }
-        .lantern-top::after {
-            content: '';
-            position: absolute;
-            top: -20px; left: 35px;
-            width: 30px; height: 30px;
-            border: 4px solid var(--gold);
-            border-radius: 50%;
-        }
-
-        /* جسم الفانوس الزجاجي */
-        .lantern-body {
-            width: 160px;
-            height: 220px;
-            background: var(--glass);
-            margin: 0 auto;
-            border: 5px solid var(--dark-copper);
-            border-radius: 40px;
-            position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            transition: all 0.8s ease;
+            font-family: 'Segoe UI', sans-serif;
+            perspective: 1000px;
         }
 
-        .active .lantern-body {
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 80%);
-            border-color: var(--gold);
-            box-shadow: 0 0 50px var(--gold), inset 0 0 30px var(--gold);
-        }
-
-        /* قاعدة الفانوس */
-        .lantern-bottom {
-            width: 180px;
-            height: 40px;
-            background: linear-gradient(to right, var(--dark-copper), var(--gold), var(--dark-copper));
-            border-radius: 10px;
-            margin: -5px auto 0;
-        }
-
-        /* الشخصيات اللي بتلف جوه */
-        .content-wrap {
+        /* نجوم الخلفية */
+        .stars {
             position: absolute;
             width: 100%; height: 100%;
-            display: none;
-            transform-style: preserve-3d;
-        }
-        .active .content-wrap {
-            display: block;
-            animation: rotate3d 6s linear infinite;
+            background: transparent;
+            z-index: 0;
         }
 
-        .char {
+        /* الهلال الذهبي */
+        .moon {
             position: absolute;
-            font-size: 40px;
-            top: 40%; left: 40%;
+            top: 15%; right: 10%;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            box-shadow: 15px 15px 0 0 var(--gold);
+            filter: blur(1px) drop-shadow(0 0 15px var(--gold));
+            opacity: 0.3;
+            z-index: 1;
+            transform: rotate(-15deg);
         }
-        .char1 { transform: rotateY(0deg) translateZ(50px); }
-        .char2 { transform: rotateY(180deg) translateZ(50px); }
+
+        /* العداد التنازلي الشيك */
+        .countdown {
+            text-align: center;
+            z-index: 10;
+            color: var(--gold);
+            margin-bottom: 50px;
+            opacity: 0.8;
+        }
+        #timer {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex; gap: 15px;
+            justify-content: center;
+        }
+
+        /* الفانوس الاحترافي */
+        .lantern-world {
+            position: relative;
+            width: 220px; height: 400px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .fanous-obj {
+            width: 100%; height: 100%;
+            position: relative;
+            filter: brightness(0.1) contrast(1.2); /* مضلم جداً في البداية */
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .active .fanous-obj {
+            filter: brightness(1.1) contrast(1);
+            drop-shadow: 0 0 40px var(--gold);
+        }
+
+        /* رسم جسم الفانوس */
+        .cap {
+            width: 100px; height: 45px;
+            background: linear-gradient(90deg, #3a2a0d, var(--gold), #3a2a0d);
+            margin: 0 auto; border-radius: 50% 50% 0 0;
+            border-bottom: 2px solid #222;
+        }
+        .body-glass {
+            width: 160px; height: 230px;
+            margin: 0 auto; border: 3px solid #444;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 40px; position: relative;
+            overflow: hidden;
+            transition: 1s;
+        }
+        .active .body-glass {
+            border-color: var(--gold);
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 80%);
+            box-shadow: inset 0 0 30px var(--gold);
+        }
+        .base {
+            width: 180px; height: 35px;
+            background: linear-gradient(90deg, #3a2a0d, var(--gold), #3a2a0d);
+            margin: -5px auto 0; border-radius: 10px;
+        }
+
+        /* دوران فنانيس */
+        .inner-motion {
+            position: absolute; width: 100%; height: 100%;
+            display: none; transform-style: preserve-3d;
+        }
+        .active .inner-motion {
+            display: block;
+            animation: rotate3d 8s linear infinite;
+        }
+        .fanis {
+            position: absolute; width: 80px; top: 35%; left: 25%;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8));
+        }
+        .p1 { transform: rotateY(0deg) translateZ(65px); }
+        .p2 { transform: rotateY(180deg) translateZ(65px); }
 
         @keyframes rotate3d {
             from { transform: rotateY(0deg); }
             to { transform: rotateY(360deg); }
         }
 
-        /* التلج / الجليتر */
-        canvas {
-            position: absolute;
-            top: 0; left: 0;
-            pointer-events: none;
-        }
+        canvas { position: absolute; top: 0; left: 0; z-index: 5; pointer-events: none; }
 
-        .info {
-            color: var(--gold);
-            margin-top: 30px;
-            opacity: 0.6;
-            font-size: 1.2rem;
+        /* نبض النور */
+        .pulse {
+            position: absolute; top: 40%; left: 50%;
+            width: 1px; height: 1px;
+            background: var(--gold);
+            box-shadow: 0 0 100px 50px var(--gold);
+            border-radius: 50%;
+            opacity: 0; transition: 1s; z-index: 2;
+        }
+        .active .pulse { opacity: 0.2; animation: pulseGlow 3s infinite alternate; }
+
+        @keyframes pulseGlow {
+            from { transform: scale(1); opacity: 0.1; }
+            to { transform: scale(1.5); opacity: 0.3; }
         }
     </style>
 </head>
 <body>
 
-    <div class="scene">
-        <div class="info" id="msg">إضغط لتضيء ليلتك</div>
-        
-        <div class="lantern" id="fanous">
-            <div class="lantern-top"></div>
-            <div class="lantern-body">
-                <canvas id="snow"></canvas>
-                <div class="content-wrap">
-                    <div class="char char1">🌙</div>
-                    <div class="char char2">🌟</div>
-                </div>
-            </div>
-            <div class="lantern-bottom"></div>
-        </div>
-        
-        <h2 style="margin-top: 40px; color: var(--gold); font-weight: 300;">رمضان ١٩ مارس</h2>
+    <div class="stars" id="starField"></div>
+    <div class="moon"></div>
+
+    <div class="countdown">
+        <h3 style="font-weight: 300; margin-bottom: 5px;">متبقي على ١٩ فبراير</h3>
+        <div id="timer">00:00:00:00</div>
     </div>
 
-    <audio id="ramadanSong" loop>
+    <div class="lantern-world" id="mainScene">
+        <div class="pulse"></div>
+        <div class="fanous-obj">
+            <div class="cap"></div>
+            <div class="body-glass">
+                <canvas id="snow"></canvas>
+                <div class="inner-motion">
+                    <img src="fanis1.png.jpeg" class="fanis p1">
+                    <img src="fanis2.png.jpeg" class="fanis p2">
+                </div>
+            </div>
+            <div class="base"></div>
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
         <source src="1000349041.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const fanous = document.getElementById('fanous');
-        const song = document.getElementById('ramadanSong');
+        const scene = document.getElementById('mainScene');
+        const music = document.getElementById('bgMusic');
         const canvas = document.getElementById('snow');
         const ctx = canvas.getContext('2d');
-        let isOn = false;
+        let isLit = false;
 
-        fanous.onclick = () => {
-            isOn = !isOn;
-            document.body.classList.toggle('active');
-            fanous.parentElement.classList.toggle('active'); // للتحكم في الأنميشن
-            
-            if(isOn) {
-                song.play().catch(e => console.log("الصوت محتاج تفاعل"));
-                document.getElementById('msg').innerText = "رمضان كريم";
+        // نجوم الخلفية (برمجة)
+        const starField = document.getElementById('starField');
+        for(let i=0; i<100; i++) {
+            let s = document.createElement('div');
+            s.style.position = 'absolute';
+            s.style.width = '2px'; s.style.height = '2px';
+            s.style.background = 'white';
+            s.style.top = Math.random()*100+'%';
+            s.style.left = Math.random()*100+'%';
+            s.style.opacity = Math.random();
+            s.style.animation = `pulseGlow ${Math.random()*3+2}s infinite alternate`;
+            starField.appendChild(s);
+        }
+
+        scene.onclick = () => {
+            isLit = !isLit;
+            scene.classList.toggle('active');
+            if(isLit) {
+                music.play();
                 initSnow();
             } else {
-                song.pause();
-                document.getElementById('msg').innerText = "إضغط لتضيء ليلتك";
+                music.pause();
             }
         };
 
-        // حركة التلج (الجليتر)
-        let particles = [];
+        // العداد لـ 19 فبراير
+        const target = new Date("February 19, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const d = target - now;
+            const days = Math.floor(d / 86400000);
+            const hrs = Math.floor((d % 86400000) / 3600000);
+            const min = Math.floor((d % 3600000) / 60000);
+            const sec = Math.floor((d % 60000) / 1000);
+            document.getElementById('timer').innerText = `${days}ي : ${hrs}س : ${min}د : ${sec}ث`;
+        }, 1000);
+
+        // جليتر ذهبي
+        let p = [];
         function initSnow() {
-            canvas.width = 160;
-            canvas.height = 220;
-            particles = Array.from({length: 50}, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                v: Math.random() * 1 + 0.5
+            canvas.width = 160; canvas.height = 230;
+            p = Array.from({length: 60}, () => ({
+                x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*0.7+0.3
             }));
         }
 
-        function animate() {
-            if(isOn) {
+        function draw() {
+            if(isLit) {
                 ctx.clearRect(0,0,canvas.width, canvas.height);
-                ctx.fillStyle = "rgba(212, 175, 55, 0.8)";
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 1.5, 0, 7);
-                    ctx.fill();
-                    p.y += p.v;
-                    if(p.y > canvas.height) p.y = -5;
+                ctx.fillStyle = "#d4af37";
+                p.forEach(i => {
+                    ctx.beginPath(); ctx.arc(i.x, i.y, 1.1, 0, 7); ctx.fill();
+                    i.y += i.s; if(i.y > canvas.height) i.y = -5;
                 });
             }
-            requestAnimationFrame(animate);
+            requestAnimationFrame(draw);
         }
-        animate();
+        draw();
     </script>
 </body>
 </html>
