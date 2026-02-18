@@ -3,165 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تجربة رمضان الاحترافية 2026</title>
+    <title>فانوس رمضان الاحترافي 2026</title>
     <style>
-        /* استيراد خط عربي أنيق */
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
-
         :root {
             --gold: #d4af37;
-            --soft-gold: rgba(212, 175, 55, 0.3);
-            --bg-dark: #05050a;
+            --dark-copper: #5d4037;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            background: radial-gradient(circle at center, #1a1a2e 0%, #05050a 100%);
             margin: 0;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            background: radial-gradient(circle at center, #1a1a2e, #050505);
+            transition: background 1.5s ease;
             overflow: hidden;
-            font-family: 'Amiri', serif;
-            color: var(--gold);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* الهلال الهادئ المتحرك ببطء */
-        .moon-crescent {
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            box-shadow: 12px 12px 0 0 var(--gold);
-            filter: blur(1px) drop-shadow(0 0 10px var(--gold));
-            opacity: 0.2;
-            animation: float 6s ease-in-out infinite;
+        /* لما الفانوس ينور، الخلفية بتهدأ وتضلم */
+        body.active {
+            background: #020205;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .header {
-            text-align: center;
-            z-index: 10;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            letter-spacing: 2px;
-            opacity: 0.8;
-        }
-
-        /* حاوية الفانوس */
-        .lantern-stage {
+        .scene {
             position: relative;
-            width: 280px;
-            height: 450px;
+            text-align: center;
+        }
+
+        /* تصميم الفانوس بالـ CSS */
+        .lantern {
+            width: 180px;
+            height: 320px;
+            position: relative;
             cursor: pointer;
-            z-index: 5;
+            transition: transform 0.5s;
+            margin-top: 50px;
         }
 
-        /* الفانوس في حالته الهادئة (مضلم وشيك) */
-        .lantern-frame {
+        /* قمة الفانوس */
+        .lantern-top {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(to right, var(--dark-copper), var(--gold), var(--dark-copper));
+            margin: 0 auto;
+            border-radius: 50% 50% 0 0;
+            position: relative;
+            border-bottom: 4px solid #3e2723;
+        }
+        .lantern-top::after {
+            content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            pointer-events: none;
-            filter: brightness(0.15) grayscale(1); /* هدوء تام في البداية */
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            top: -20px; left: 35px;
+            width: 30px; height: 30px;
+            border: 4px solid var(--gold);
+            border-radius: 50%;
         }
 
-        .active .lantern-frame {
-            filter: brightness(1.1) grayscale(0) drop-shadow(0 0 20px var(--gold));
-        }
-
-        /* الزجاج الداخلي */
-        .glass-inner {
-            position: absolute;
-            top: 24%; left: 18%;
-            width: 64%; height: 42%;
-            z-index: 5;
+        /* جسم الفانوس الزجاجي */
+        .lantern-body {
+            width: 160px;
+            height: 220px;
+            background: var(--glass);
+            margin: 0 auto;
+            border: 5px solid var(--dark-copper);
+            border-radius: 40px;
+            position: relative;
             overflow: hidden;
-            border-radius: 50% 50% 15% 15%;
-            background: rgba(0, 0, 0, 0.4);
-            transition: background 1s ease;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            transition: all 0.8s ease;
         }
 
-        .active .glass-inner {
-            background: radial-gradient(circle, rgba(255,220,100,0.2) 0%, transparent 80%);
+        .active .lantern-body {
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 80%);
+            border-color: var(--gold);
+            box-shadow: 0 0 50px var(--gold), inset 0 0 30px var(--gold);
         }
 
-        /* الشخصيات (فنانيس) */
-        .fananis-wrap {
+        /* قاعدة الفانوس */
+        .lantern-bottom {
+            width: 180px;
+            height: 40px;
+            background: linear-gradient(to right, var(--dark-copper), var(--gold), var(--dark-copper));
+            border-radius: 10px;
+            margin: -5px auto 0;
+        }
+
+        /* الشخصيات اللي بتلف جوه */
+        .content-wrap {
             position: absolute;
             width: 100%; height: 100%;
             display: none;
             transform-style: preserve-3d;
         }
-
-        .active .fananis-wrap {
+        .active .content-wrap {
             display: block;
-            animation: rotate3D 7s linear infinite;
+            animation: rotate3d 6s linear infinite;
         }
 
         .char {
             position: absolute;
-            width: 75px;
-            top: 35%; left: 36%;
+            font-size: 40px;
+            top: 40%; left: 40%;
         }
-        .p1 { transform: rotateY(0deg) translateZ(60px); }
-        .p2 { transform: rotateY(180deg) translateZ(60px); }
+        .char1 { transform: rotateY(0deg) translateZ(50px); }
+        .char2 { transform: rotateY(180deg) translateZ(50px); }
 
-        @keyframes rotate3D {
+        @keyframes rotate3d {
             from { transform: rotateY(0deg); }
             to { transform: rotateY(360deg); }
         }
 
-        /* تأثير التوهج (Glow) */
-        .main-glow {
+        /* التلج / الجليتر */
+        canvas {
             position: absolute;
-            top: 45%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 1.5s ease;
+            top: 0; left: 0;
+            pointer-events: none;
         }
-        .active .main-glow { opacity: 1; }
 
-        canvas { position: absolute; top: 0; left: 0; z-index: 6; }
+        .info {
+            color: var(--gold);
+            margin-top: 30px;
+            opacity: 0.6;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="moon-crescent"></div>
-
-    <div class="header">
-        <h1>رمضان ١٤٤٧ هـ</h1>
-        <p id="countdown" style="font-size: 1.2rem; opacity: 0.6;">هدوء ما قبل التشغيل...</p>
-    </div>
-
-    <div class="lantern-stage" id="fanousBox">
-        <div class="main-glow"></div>
+    <div class="scene">
+        <div class="info" id="msg">إضغط لتضيء ليلتك</div>
         
-        <img src="https://i.ibb.co/3W6p0Fj/lantern-vogue.png" class="lantern-frame">
-
-        <div class="glass-inner">
-            <canvas id="snowCanvas"></canvas>
-            <div class="fananis-wrap">
-                <img src="https://i.ibb.co/k2Vp9p4/fanis1.png" class="char p1">
-                <img src="https://i.ibb.co/6yXm1F3/fanis2.png" class="char p2">
+        <div class="lantern" id="fanous">
+            <div class="lantern-top"></div>
+            <div class="lantern-body">
+                <canvas id="snow"></canvas>
+                <div class="content-wrap">
+                    <div class="char char1">🌙</div>
+                    <div class="char char2">🌟</div>
+                </div>
             </div>
+            <div class="lantern-bottom"></div>
         </div>
+        
+        <h2 style="margin-top: 40px; color: var(--gold); font-weight: 300;">رمضان ١٩ مارس</h2>
     </div>
 
     <audio id="ramadanSong" loop>
@@ -169,59 +156,54 @@
     </audio>
 
     <script>
-        const fanous = document.getElementById('fanousBox');
+        const fanous = document.getElementById('fanous');
         const song = document.getElementById('ramadanSong');
-        const canvas = document.getElementById('snowCanvas');
+        const canvas = document.getElementById('snow');
         const ctx = canvas.getContext('2d');
-        let active = false;
+        let isOn = false;
 
-        fanous.onclick = function() {
-            active = !active;
-            this.classList.toggle('active');
-            if(active) {
-                song.play();
+        fanous.onclick = () => {
+            isOn = !isOn;
+            document.body.classList.toggle('active');
+            fanous.parentElement.classList.toggle('active'); // للتحكم في الأنميشن
+            
+            if(isOn) {
+                song.play().catch(e => console.log("الصوت محتاج تفاعل"));
+                document.getElementById('msg').innerText = "رمضان كريم";
                 initSnow();
-                document.getElementById('countdown').innerText = "مرحب مرحب يا هلال..";
             } else {
                 song.pause();
-                document.getElementById('countdown').innerText = "هدوء ما قبل التشغيل...";
+                document.getElementById('msg').innerText = "إضغط لتضيء ليلتك";
             }
         };
 
-        // عداد الأيام
-        const target = new Date("March 19, 2026").getTime();
-        setInterval(() => {
-            if(!active) {
-                const now = new Date().getTime();
-                const d = Math.floor((target - now) / (1000*60*60*24));
-                document.getElementById('countdown').innerText = `باقي ${d} يوم على أجمل الشهور`;
-            }
-        }, 1000);
-
-        // الجليتر الذهبي (الثلج)
+        // حركة التلج (الجليتر)
         let particles = [];
         function initSnow() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            canvas.width = 160;
+            canvas.height = 220;
             particles = Array.from({length: 50}, () => ({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                s: Math.random() * 0.8 + 0.2
+                v: Math.random() * 1 + 0.5
             }));
         }
 
-        function draw() {
-            if(active) {
+        function animate() {
+            if(isOn) {
                 ctx.clearRect(0,0,canvas.width, canvas.height);
-                ctx.fillStyle = "rgba(212, 175, 55, 0.7)";
+                ctx.fillStyle = "rgba(212, 175, 55, 0.8)";
                 particles.forEach(p => {
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, 7); ctx.fill();
-                    p.y += p.s; if(p.y > canvas.height) p.y = -5;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 1.5, 0, 7);
+                    ctx.fill();
+                    p.y += p.v;
+                    if(p.y > canvas.height) p.y = -5;
                 });
             }
-            requestAnimationFrame(draw);
+            requestAnimationFrame(animate);
         }
-        draw();
+        animate();
     </script>
 </body>
 </html>
